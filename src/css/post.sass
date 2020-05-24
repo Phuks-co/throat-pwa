@@ -1,0 +1,75 @@
+/* Common CSS for posts, used for post lists, comments and posts */
+.post-title
+  font-size: 14px
+  color: #222
+  text-decoration: none
+
+.post-data
+  white-space: nowrap
+  overflow-x: auto
+  overflow-y: unset
+  color: rgba(0, 0, 0, 0.54)
+  a
+    text-decoration: none
+    color: #444
+
+.post-footer
+  margin-top: .1em
+  margin-bottom: .3em
+  height: 2.2em
+  vertical-align: middle
+  line-height: 2.2em
+  a
+    color: #999
+    font-size: 1.1em
+    text-decoration: none
+  *
+    vertical-align: middle
+  i
+    font-size: 1.2em
+    color: rgba(0, 0, 0, 0.54)
+
+.post-voting
+  float: right
+  margin-right: .3em
+  i
+    font-size: 2.5em
+    line-height: 100%
+    vertical-align: middle
+    cursor: pointer
+  i:active
+    background: #ddd
+  div
+    display: inline-block
+.upvoted i, .comment-footer .upvoted i
+  color: #ff6d15
+.downvoted i, .comment-footer .downvoted i
+  color: red
+
+.interpunct:after
+  font-size: .5em
+  vertical-align: middle
+  display: inline-block
+  content: "\25CF"
+  color: #444
+
+.body--dark
+  .post-footer
+    color: #666
+    i
+      color: #666
+    a
+      color: #bbb
+    i:active
+      background: #444
+  .upvoted i, .comment-footer .upvoted i
+    color: #ff6d15
+  .downvoted i, .comment-footer .downvoted i
+    color: red
+  .post-title
+    color: #bbb
+  .post-data
+    color: #777
+    a
+      color: #555
+
