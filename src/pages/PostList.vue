@@ -1,5 +1,9 @@
 <template>
   <div class="postList">
+    <q-tabs dense v-if="sub == 'home' || sub == 'all'" v-model="cSub" @input="changeSub">
+      <q-tab name="home" :to="'/home/' + sort">Home</q-tab>
+      <q-tab name="all" :to="'/all/' + sort">All</q-tab>
+    </q-tabs>
     <div class="sort-select q-pt-sm q-pl-sm">
       <q-btn-dropdown dense flat :ripple="false" :label="sort">
         <q-list>
@@ -38,9 +42,22 @@ export default Vue.extend({
   name: 'PageIndex',
   components: { PostList },
   data: () => ({
-    sorts: ['Hot', 'Top', 'New']
+    sorts: ['Hot', 'Top', 'New'],
+    cSub: ''
   }),
+  created(){
+    this.cSub = this.sub
+  },
+  watch: {
+    sub (val) {
+      this.cSub = val
+    }
+  },
   methods: {
+    changeSub () {
+      this.$route.params.sub = this.cSub
+      this.$router.push({ name: 'view_sub', params: this.$route.params })
+    },
     changeSort (sort: string) {
       if (this.sort === sort.toLowerCase()) return
       if (this.sub === 'home') {
