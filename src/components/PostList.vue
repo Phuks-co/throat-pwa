@@ -63,18 +63,17 @@ export default {
     },
     upvote (post) {
       if (post.archived) return this.$q.notify({ message: 'Post is archived', timeout: 1000 })
-      this.$store.dispatch('postList/vote', { positive: 1, pid: post.pid })
+      this.$store.dispatch('postList/vote', { positive: 1, pid: post.pid, sub: post.sub })
         .catch(e => {
           if (!e.response && typeof e !== 'string') e = 'Network error'
-          this.$q.notify(e.response.data.msg || e)
+          this.$q.notify(e)
         })
     },
     downvote (post) {
       if (post.archived) return this.$q.notify({ message: 'Post is archived', timeout: 1000 })
-      this.$store.dispatch('postList/vote', { positive: 0, pid: post.pid })
+      this.$store.dispatch('postList/vote', { positive: 0, pid: post.pid, sub: post.sub })
         .catch(e => {
-          if (!e.response && typeof e !== 'string') e = 'Network error'
-          this.$q.notify(e.response.data.msg || e)
+          this.$q.notify(e)
         })
     } // TODO: Scroll override to refresh post list
   },
