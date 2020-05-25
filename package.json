@@ -1,15 +1,15 @@
 {
   "name": "throat-pwa",
   "version": "0.0.1",
-  "description": "Throat link aggregator client",
-  "productName": "Throat",
+  "description": "Phuks link aggregator client",
+  "productName": "Phuks",
   "cordovaId": "space.shitposting.app",
   "capacitorId": "",
   "author": "Ramiro Bou <polsaker@phuks.co>",
   "private": true,
   "scripts": {
     "serve": "QENV=development quasar dev",
-    "build": "QENV=production quasar build",
+    "build": "QENV=production quasar build -m pwa",
     "lint": "eslint --ext .js,.ts,.vue --ignore-path .gitignore ./",
     "test": "echo \"No test specified\" && exit 0"
   },
