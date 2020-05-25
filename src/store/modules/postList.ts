@@ -219,9 +219,10 @@ export const actions: ActionTree<State, StoreInterface> = {
   },
   async vote ({ commit }, payload) {
     commit('setLoadingVote', { pid: payload.pid, positive: payload.positive, loading: true })
-    await axios.post(process.env.API_URI + 'post/' + payload.sub + '/' + payload.pid + '/vote', { upvote: payload.positive === 1 })
+    return await axios.post(process.env.API_URI + 'post/' + payload.sub + '/' + payload.pid + '/vote', { upvote: payload.positive === 1 })
       .then((res) => {
         commit('setVoted', { positive: res.data.rm ? null : payload.positive, pid: payload.pid, score: res.data.score })
+        return res.data
       })
       .finally(() => commit('setLoadingVote', { pid: payload.pid, positive: payload.positive, loading: false }))
   },

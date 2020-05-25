@@ -151,7 +151,6 @@ export default {
         })
     },
     editPost () {
-      console.log('ee')
       this.editing = !this.editing
     },
     loadComments () {
@@ -171,16 +170,30 @@ export default {
     },
     upvote () {
       if (this.post.archived) return this.$q.notify({ message: 'Post is archived', timeout: 1000 })
-      this.$store.dispatch('postList/vote', { positive: 1, pid: this.post.pid })
+      this.post.loadingUpvote = true
+      this.$store.dispatch('postList/vote', { positive: 1, pid: this.post.pid, sub: this.post.sub })
+        .then((r) => {
+          this.post.positive = r.rm ? null : 1
+          this.post.score = r.score
+        })
         .catch(e => {
           this.$q.notify(e)
+        }).finally(() => {
+          this.post.loadingUpvote = false
         })
     },
     downvote () {
       if (this.post.archived) return this.$q.notify({ message: 'Post is archived', timeout: 1000 })
-      this.$store.dispatch('postList/vote', { positive: 0, pid: this.post.pid })
+      this.post.loadingDownvote = true
+      this.$store.dispatch('postList/vote', { positive: 0, pid: this.post.pid, sub: this.post.sub })
+        .then((r) => {
+          this.post.positive = r.rm ? null : 0
+          this.post.score = r.score
+        })
         .catch(e => {
           this.$q.notify(e)
+        }).finally(() => {
+          this.post.loadingDownvote = false
         })
     },
     replyComment () {
