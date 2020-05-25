@@ -45,7 +45,7 @@ export default Vue.extend({
     sorts: ['Hot', 'Top', 'New'],
     cSub: ''
   }),
-  created(){
+  created () {
     this.cSub = this.sub
   },
   watch: {
