@@ -56,6 +56,7 @@ export default Vue.extend({
   methods: {
     changeSub () {
       this.$route.params.sub = this.cSub
+      if (!this.$route.params.sort) this.$route.params.sort = 'hot'
       this.$router.push({ name: 'view_sub', params: this.$route.params })
     },
     changeSort (sort: string) {
