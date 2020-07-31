@@ -97,6 +97,7 @@ export default {
   margin-bottom: 0.25em
   padding-top: 0.25em
   min-height: 50px
+  margin-right: 5px
 
 .post-thumbnail
   float: left
