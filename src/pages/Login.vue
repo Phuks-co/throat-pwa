@@ -58,13 +58,8 @@ export default Vue.extend({
           }
         })
         .catch((e) => {
-          if (e.response) {
-            this.errorMsg = 'Invalid username or password.'
-            this.error = true
-          } else {
-            // Network error
-            this.$q.notify('Could not contact the server.')
-          }
+          this.errorMsg = e
+          this.error = true
         })
     }
   }
