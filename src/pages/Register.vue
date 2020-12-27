@@ -97,7 +97,7 @@ export default Vue.extend({
         username: this.username,
         password: this.password,
         email: this.email,
-        invite_code: this.inviteCode,
+        inviteCode: this.inviteCode,
         challengeResponse: this.challengeResponse
       })
         .then(() => {

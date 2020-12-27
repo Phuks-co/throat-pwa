@@ -13,7 +13,7 @@ export interface State {
     enabled: boolean;
     mandatory: {
       email: boolean;
-      invite_code: boolean;
+      inviteCode: boolean;
     };
   };
   accountStatus: null|0|1;
@@ -29,7 +29,7 @@ export interface Getters {
     enabled: boolean;
     mandatory: {
       email: boolean;
-      invite_code: boolean;
+      inviteCode: boolean;
     };
   };
   accountStatus: null|0|1;
@@ -52,7 +52,7 @@ export interface Mutations {
     enabled: boolean;
     mandatory: {
       email: boolean;
-      invite_code: boolean;
+      inviteCode: boolean;
     };
   };
   setAccountStatus: null|0|1;
