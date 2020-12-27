@@ -9,6 +9,14 @@ export interface State {
   token: null|string;
   refresh: null|string;
   username: null|string;
+  registration: null|{
+    enabled: boolean;
+    mandatory: {
+      email: boolean;
+      invite_code: boolean;
+    };
+  };
+  accountStatus: null|0|1;
 }
 
 export interface Getters {
@@ -17,6 +25,14 @@ export interface Getters {
   token: null|string;
   refresh: null|string;
   username: null|string;
+  registration: null|{
+    enabled: boolean;
+    mandatory: {
+      email: boolean;
+      invite_code: boolean;
+    };
+  };
+  accountStatus: null|0|1;
 }
 
 export interface Mutations {
@@ -32,6 +48,14 @@ export interface Mutations {
   updateToken: {
     token: string;
   };
+  updateRegistrationStatus: {
+    enabled: boolean;
+    mandatory: {
+      email: boolean;
+      invite_code: boolean;
+    };
+  };
+  setAccountStatus: null|0|1;
 }
 
 export const state: State = {
@@ -39,7 +63,9 @@ export const state: State = {
   loading: false,
   token: window.localStorage.getItem('token'),
   refresh: window.localStorage.getItem('refresh'),
-  username: window.localStorage.getItem('username')
+  username: window.localStorage.getItem('username'),
+  registration: null,
+  accountStatus: null
 }
 
 export const getters: DefineGetters<Getters, State> = {
@@ -47,7 +73,9 @@ export const getters: DefineGetters<Getters, State> = {
   refresh: (state) => state.refresh,
   username: (state) => state.username,
   loggedIn: (state) => state.loggedIn,
-  loading: (state) => state.loading
+  loading: (state) => state.loading,
+  registration: (state) => state.registration,
+  accountStatus: (state) => state.accountStatus
 }
 
 export const mutations: DefineMutations<Mutations, State> = {
@@ -76,6 +104,12 @@ export const mutations: DefineMutations<Mutations, State> = {
   updateToken (state, payload) {
     state.token = payload.token
     window.localStorage.setItem('token', payload.token)
+  },
+  updateRegistrationStatus (state, payload) {
+    state.registration = payload
+  },
+  setAccountStatus (state, payload) {
+    state.accountStatus = payload
   }
 }
 
@@ -85,6 +119,7 @@ export const actions: ActionTree<State, StoreInterface> = {
     await axios.post(process.env.API_URI + 'login', payload)
       .then((res) => {
         commit('authenticate', { username: res.data.username, token: res.data.access_token, refresh: res.data.refresh_token })
+        commit('setAccountStatus', 'OK')
       }).finally(() => commit('loading', { loading: false }))
   },
   async refresh ({ commit }) {
@@ -92,6 +127,20 @@ export const actions: ActionTree<State, StoreInterface> = {
       .then((res) => {
         commit('updateToken', { token: res.data.access_token })
       })
+  },
+  async getRegistrationFields ({ commit }) {
+    await axios.get(process.env.API_URI + 'register')
+      .then((res) => {
+        commit('updateRegistrationStatus', { enabled: res.data.enabled, mandatory: res.data.mandatory })
+      })
+  },
+  async register ({ commit }, payload) {
+    commit('loading', { loading: true })
+    await axios.post(process.env.API_URI + 'register', payload)
+      .then((res) => {
+        commit('setAccountStatus', res.data.status)
+      })
+      .finally(() => commit('loading', { loading: false }))
   },
   logout ({ commit }) {
     commit('logout')
