@@ -1,6 +1,8 @@
 import { Module, ActionTree } from 'vuex'
 import { StoreInterface } from '../index'
 import axios from 'axios'
+// eslint-disable-next-line camelcase,@typescript-eslint/camelcase
+import jwt_decode from 'jwt-decode'
 import { DefineGetters, DefineMutations } from 'vuex-type-helper'
 
 export interface State {
@@ -122,7 +124,17 @@ export const actions: ActionTree<State, StoreInterface> = {
         commit('setAccountStatus', 'OK')
       }).finally(() => commit('loading', { loading: false }))
   },
-  async refresh ({ commit }) {
+  async refresh ({ commit, state }) {
+    if (!state.refresh) {
+      commit('logout')
+      return
+    }
+    // Check if the refresh token has expired
+    const decoded: { exp: number } = jwt_decode(state.refresh)
+    if (Date.now() >= decoded.exp * 1000) {
+      commit('logout')
+      return
+    }
     await axios.post(process.env.API_URI + 'refresh')
       .then((res) => {
         commit('updateToken', { token: res.data.access_token })
