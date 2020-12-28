@@ -71,9 +71,11 @@ export const actions: ActionTree<State, StoreInterface> = {
   disableNotifications ({ commit }) {
     const messaging = firebase.messaging()
     commit('setLoading', true)
-    messaging.deleteToken()
-      .then(() => commit('setToken', null))
-      .finally(() => commit('setLoading', false))
+    return messaging.deleteToken()
+      .finally(() => {
+        commit('setToken', null)
+        commit('setLoading', false)
+      })
   },
   enableNotifications ({ commit, dispatch }) {
     commit('setLoading', true)
