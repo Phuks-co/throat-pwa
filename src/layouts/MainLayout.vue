@@ -47,6 +47,18 @@
             <q-toggle color="red" v-model="darkMode" />
           </q-item-section>
         </q-item>
+
+        <q-item tag="label" v-ripple v-if="$store.state.auth.loggedIn">
+          <q-item-section>
+            <q-item-label>Notifications</q-item-label>
+          </q-item-section>
+          <q-item-section avatar v-if="!$store.state.notifications.loading">
+            <q-toggle color="red" v-model="notifications" />
+          </q-item-section>
+          <q-item-section avatar v-else>
+            <q-spinner color="gray" size="1.7em"/>
+          </q-item-section>
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -68,7 +80,8 @@ export default {
   data () {
     return {
       leftDrawerOpen: false,
-      darkMode: false
+      darkMode: false,
+      notifications: this.$store.state.notifications.pushToken !== null
     }
   },
   created () {
@@ -79,6 +92,13 @@ export default {
     darkMode (val) {
       localStorage.setItem('dark', val ? '1' : '0')
       this.$q.dark.set(val)
+    },
+    notifications (val) {
+      if (val) {
+        this.$store.dispatch('notifications/enableNotifications').finally(() => this.$store.state.notifications.pushToken !== null)
+      } else {
+        this.$store.dispatch('notifications/disableNotifications').finally(() => this.$store.state.notifications.pushToken !== null)
+      }
     }
   },
   methods: {

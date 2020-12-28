@@ -54,8 +54,6 @@ export default {
   min-height: 15em
 
 .comment-create
-  position: absolute
-  left: 0
   background: white
   width: 95%
 

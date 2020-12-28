@@ -5,6 +5,7 @@ import Vuex from 'vuex'
 import postList from './modules/postList'
 import auth from './modules/auth'
 import captcha from './modules/captcha'
+import notifications from './modules/notifications'
 
 import axios from 'axios'
 // import example from './module-example';
@@ -16,6 +17,7 @@ export interface StoreInterface {
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   auth: unknown;
   postList: unknown;
+  notifications: unknown;
   captcha: {
     required: boolean;
   };
@@ -28,7 +30,8 @@ export default store(function ({ Vue }) {
     modules: {
       auth,
       postList,
-      captcha
+      captcha,
+      notifications
     }
   })
   axios.interceptors.request.use(function (config) {
