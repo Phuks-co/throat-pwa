@@ -43,7 +43,8 @@ export const state: State = {
 
 export const getters: DefineGetters<Getters, State> = {
   loading: (state) => state.loading,
-  pushToken: (state) => state.pushToken
+  pushToken: (state) => state.pushToken,
+  available: (state) => state.available
 }
 
 export const mutations: DefineMutations<Mutations, State> = {
