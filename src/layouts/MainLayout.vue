@@ -59,6 +59,10 @@
             <q-spinner color="gray" size="1.7em"/>
           </q-item-section>
         </q-item>
+
+        <q-item>
+          Version: {{version}}
+        </q-item>
       </q-list>
     </q-drawer>
 
@@ -70,6 +74,7 @@
 
 <script>
 import DrawerItem from '../components/DrawerItem'
+import { version } from '../../package.json'
 
 export default {
   name: 'MainLayout',
@@ -79,6 +84,7 @@ export default {
   },
   data () {
     return {
+      version: version,
       leftDrawerOpen: false,
       darkMode: false,
       notifications: this.$store.state.notifications.pushToken !== null
