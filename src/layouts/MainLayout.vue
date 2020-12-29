@@ -53,7 +53,7 @@
             <q-item-label>Notifications</q-item-label>
           </q-item-section>
           <q-item-section avatar v-if="!$store.state.notifications.loading">
-            <q-toggle color="red" v-model="notifications" />
+            <q-toggle color="red" v-model="notifications" :disable="$store.state.notifications.available" />
           </q-item-section>
           <q-item-section avatar v-else>
             <q-spinner color="gray" size="1.7em"/>

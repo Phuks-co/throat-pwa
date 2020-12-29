@@ -21,11 +21,13 @@ firebase.initializeApp(firebaseConfig)
 export interface State {
   loading: boolean;
   pushToken: null | string;
+  available: boolean;
 }
 
 export interface Getters {
   loading: boolean;
   pushToken: null | string;
+  available: boolean;
 }
 
 export interface Mutations {
@@ -35,7 +37,8 @@ export interface Mutations {
 
 export const state: State = {
   loading: false,
-  pushToken: window.localStorage.getItem('pushToken')
+  pushToken: window.localStorage.getItem('pushToken'),
+  available: firebase.messaging.isSupported()
 }
 
 export const getters: DefineGetters<Getters, State> = {
