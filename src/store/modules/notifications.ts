@@ -77,26 +77,48 @@ export const actions: ActionTree<State, StoreInterface> = {
         commit('setLoading', false)
       })
   },
+  permissionGranted ({ dispatch, commit }) {
+    return dispatch('getToken').then((token) => {
+      console.log(token)
+      axios.post(process.env.API_URI + 'push', { token: token })
+        .then(() => {
+          commit('setToken', token)
+        }).finally(() => commit('setLoading', false))
+    }).catch((e) => {
+      console.log(e)
+      commit('setLoading', false)
+    })
+  },
   enableNotifications ({ commit, dispatch }) {
     commit('setLoading', true)
-    return Notification.requestPermission().then((permission) => {
-      if (permission === 'granted') {
-        return dispatch('getToken').then((token) => {
-          console.log(token)
-          axios.post(process.env.API_URI + 'push', { token: token })
-            .then(() => {
-              commit('setToken', token)
-            }).finally(() => commit('setLoading', false))
-        }).catch((e) => {
-          console.log(e)
+    try {
+      return Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          return dispatch('permissionGranted')
+        } else {
+          console.log('Unable to get permission to notify.')
           commit('setLoading', false)
+          return Promise.reject('Unable to get notification permission')
+        }
+      })
+    } catch (error) {
+      if (error instanceof TypeError) {
+        // Workaround for safari
+        // noinspection JSIgnoredPromiseFromCall
+        Notification.requestPermission((permission) => {
+          if (permission === 'granted') {
+            dispatch('permissionGranted')
+          } else {
+            console.log('Unable to get permission to notify.')
+            commit('setLoading', false)
+          }
         })
+        // :(
+        return Promise.resolve()
       } else {
-        console.log('Unable to get permission to notify.')
-        commit('setLoading', false)
-        return Promise.reject('Unable to get notification permission')
+        throw error
       }
-    })
+    }
   }
 }
 
