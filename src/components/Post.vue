@@ -272,7 +272,9 @@ export default {
   .post-link
     border-color: #333
     .p-a
-      color: #105be6
+      color: #3374ec
   .create-comm:active
     background: #444
+  a
+    color: #777
 </style>

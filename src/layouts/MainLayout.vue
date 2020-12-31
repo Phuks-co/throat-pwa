@@ -118,14 +118,18 @@ export default {
   }
 }
 </script>
-<style>
-.material-icons.alm{
-  vertical-align: middle;
-}
-.body--dark #mainHeader{
-    background-color: black;
-}
-body.body--dark {
+<style lang="sass">
+.material-icons.alm
+  vertical-align: middle
+
+.body--dark #mainHeader
+    background-color: black
+
+body.body--dark
   background: #000
-}
+  a
+    color: #777
+  a:visited
+    color: #444
+
 </style>
