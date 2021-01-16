@@ -28,10 +28,10 @@
     </div>
 
     <div v-if="comment.cid" :class="((cid && comment.cid == cid) ? 'highlighted ' : '') + 'comment-footer'" :style="(collapsed) ? 'display: none' : 'display: block'">
-      <span v-if="comment.status === null" class="more footerbtn" @click="replyComment"><i class="material-icons">reply</i></span>
+      <span v-if="comment.status === null && !noMenu" class="more footerbtn" @click="replyComment"><i class="material-icons">reply</i></span>
       <div style="display: inline-block; float: right">
-        <span v-if="comment.user === $store.state.auth.username" class="more footerbtn" @click="editComment"><i class="material-icons">edit</i></span>
-        <q-btn v-if="comment.status === null" flat dense icon="more_vert">
+        <span v-if="comment.user === $store.state.auth.username && !noMenu" class="more footerbtn" @click="editComment"><i class="material-icons">edit</i></span>
+        <q-btn v-if="comment.status === null && !noMenu" flat dense icon="more_vert">
           <q-menu>
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup :to="'/s/' + post.sub + '/' + comment.pid + '/' + comment.cid">
@@ -115,6 +115,10 @@ export default {
     },
     sub: {
       type: String
+    },
+    noMenu: {
+      type: Boolean,
+      default: false
     }
   },
   name: 'Comment',

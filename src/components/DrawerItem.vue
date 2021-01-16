@@ -9,7 +9,11 @@
       v-if="icon"
       avatar
     >
-      <q-icon :name="icon" />
+      <div class="relative-position">
+        <q-icon :name="icon" size="25px">
+        </q-icon>
+        <q-badge color="red" v-if="badge" floating>{{ badge }}</q-badge>
+      </div>
     </q-item-section>
 
     <q-item-section>
@@ -43,6 +47,9 @@ export default {
     icon: {
       type: String,
       default: ''
+    },
+    badge: {
+      type: Number
     }
   },
   methods: {

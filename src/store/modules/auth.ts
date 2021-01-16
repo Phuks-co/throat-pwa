@@ -156,6 +156,12 @@ export const actions: ActionTree<State, StoreInterface> = {
   },
   logout ({ commit }) {
     commit('logout')
+  },
+  async getData ({ dispatch }) {
+    await axios.get(process.env.API_URI + 'user')
+      .then((res) => {
+        dispatch('notifications/setNotificationCount', res.data.alerts, { root: true })
+      })
   }
 }
 

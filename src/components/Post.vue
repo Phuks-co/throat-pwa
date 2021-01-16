@@ -11,13 +11,13 @@
       </div>
 
       <!-- link post -->
-      <div v-if="post.type === 'link'" :class="(post.trustedHost ? 'post-link-th' : '') + ' post-link'">
+      <div v-if="post.link" :class="(post.trustedHost ? 'post-link-th' : '') + ' post-link'">
         <div v-if="post.trustedHost">
           <a :href="post.link" target="_blank"><img :alt="post.title" :src="post.link"/></a>
         </div>
         <a class="p-a" :href="post.link" target="_blank">{{post.link}}</a>
       </div>
-      <div v-else-if="post.type == 'text' && !editing" class="post-text" v-html="post.content"/>
+      <div v-else-if="post.content && !editing" class="post-text" v-html="post.content"/>
       <div v-else-if="post.type == 'text' && editing" class="comment-create-container">
         <div class="comment-create q-ml-sm q-mr-sm q-pb-lg q-pt-sm">
           <q-input
@@ -56,11 +56,11 @@
               </q-list>
             </q-menu>
           </q-btn>
-          <div class="post-voting">
-            <div title="Upvote" v-if="!post.loadingUpvote" :class="((post.positive == 1) ? 'upvoted ': '') + 'upvote'" @click="upvote(post)" ><i class="material-icons">expand_less</i></div>
+          <div class="post-voting" :key="post.score">
+            <div title="Upvote" v-if="!loadingUpvote" :class="((post.positive == 1) ? 'upvoted ': '') + 'upvote'" @click="upvote(post)" ><i class="material-icons">expand_less</i></div>
             <div class="q-pr-sm" v-else><q-spinner color="gray" size="1.7em"/></div>
             <div class="score">{{post.score}}</div>
-            <div title="Downvote" v-if="!post.loadingDownvote" :class="((post.positive == 0) ? 'downvoted ': '') + 'downvote'" @click="downvote(post)"><i class="material-icons">expand_more</i></div>
+            <div title="Downvote" v-if="!loadingDownvote" :class="((post.positive == 0) ? 'downvoted ': '') + 'downvote'" @click="downvote(post)"><i class="material-icons">expand_more</i></div>
             <div class="q-pr-sm" v-else><q-spinner color="gray" size="1.7em"/></div>
           </div>
         </div>
@@ -68,7 +68,7 @@
     </div>
     <CommentCreator v-if="createComment" :sub="post.sub" :pid="post.pid" @newcomment="newComment" />
 
-    <div class="comment-block q-pl-sm">
+    <div class="comment-block q-pl-sm" v-if="!noComments">
       <div class="q-pt-sm" style="font-size: 1.4em">Comments</div>
 
       <div v-if="$store.state.postList.loadingComments && post.comments > 0" class="row justify-center full-height full-width text-center q-pt-lg">
@@ -113,6 +113,10 @@ export default {
     cid: {
       type: String,
       default: ''
+    },
+    noComments: {
+      type: Boolean,
+      default: false
     }
   },
   data: () => ({
@@ -124,7 +128,10 @@ export default {
     fcid: null,
 
     editing: false,
-    deletePostDialog: false
+    deletePostDialog: false,
+
+    loadingDownvote: false,
+    loadingUpvote: false
   }),
   created () {
     this.comments = []
@@ -170,7 +177,7 @@ export default {
     },
     upvote () {
       if (this.post.archived) return this.$q.notify({ message: 'Post is archived', timeout: 1000 })
-      this.post.loadingUpvote = true
+      this.loadingUpvote = true
       this.$store.dispatch('postList/vote', { positive: 1, pid: this.post.pid, sub: this.post.sub })
         .then((r) => {
           this.post.positive = r.rm ? null : 1
@@ -179,12 +186,12 @@ export default {
         .catch(e => {
           this.$q.notify(e)
         }).finally(() => {
-          this.post.loadingUpvote = false
+          this.loadingUpvote = false
         })
     },
     downvote () {
       if (this.post.archived) return this.$q.notify({ message: 'Post is archived', timeout: 1000 })
-      this.post.loadingDownvote = true
+      this.loadingDownvote = true
       this.$store.dispatch('postList/vote', { positive: 0, pid: this.post.pid, sub: this.post.sub })
         .then((r) => {
           this.post.positive = r.rm ? null : 0
@@ -193,7 +200,7 @@ export default {
         .catch(e => {
           this.$q.notify(e)
         }).finally(() => {
-          this.post.loadingDownvote = false
+          this.loadingDownvote = false
         })
     },
     replyComment () {

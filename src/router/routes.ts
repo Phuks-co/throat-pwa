@@ -15,6 +15,8 @@ const routes: RouteConfig[] = [
 
       { path: '/submit/:sub?', name: 'create_post', props: true, component: () => import('pages/Submit.vue') },
 
+      { path: '/messages/notifications', name: 'view_notifications', props: true, component: () => import('pages/Notifications.vue') },
+
       { path: 'login', name: 'login', component: () => import('pages/Login.vue') },
       { path: 'register', name: 'register', component: () => import('pages/Register.vue') }
     ]

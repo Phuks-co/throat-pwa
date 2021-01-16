@@ -59,10 +59,10 @@ module.exports = configure(function (ctx) {
       directives: [],
 
       config: {
-        brand: {
-          primary: '#ff5722',
-          dark: '#000'
-        }
+        // brand: {
+        //   primary: '#ff5722',
+        //   dark: '#000'
+        // }
       },
       // Quasar plugins
       plugins: [

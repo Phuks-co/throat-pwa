@@ -8,8 +8,9 @@
           round
           icon="menu"
           aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
+          @click="leftDrawerOpen = !leftDrawerOpen">
+          <q-badge color="red" v-if="!leftDrawerOpen && $store.state.notifications.count.total" floating>{{ $store.state.notifications.count.total }}</q-badge>
+        </q-btn>
 
         <q-toolbar-title>
           <router-link tag="span" to="/">Phuks</router-link>
@@ -26,7 +27,7 @@
     >
       <q-list>
         <DrawerItem v-if="!$store.state.auth.loggedIn" link="/login" title="Login" icon="perm_identity"/>
-        <!-- TODO <DrawerItem v-if="!$store.state.auth.loggedIn" link="/register" title="Register" icon="portrait"/> -->
+        <DrawerItem v-if="!$store.state.auth.loggedIn" link="/register" title="Register" icon="portrait"/>
 
         <q-item-label
           header
@@ -38,6 +39,10 @@
         <DrawerItem v-if="$store.state.auth.loggedIn" @click="logout" title="Log out" icon="contact_mail"/>
 
         <q-separator />
+        <DrawerItem v-if="$store.state.auth.loggedIn" title="Notifications" link="/messages/notifications" icon="notifications" :badge="$store.state.notifications.count.notifications"/>
+        <!--<DrawerItem v-if="$store.state.auth.loggedIn" title="Messages" icon="mail"/>-->
+
+        <q-separator/>
 
         <q-item tag="label" v-ripple>
           <q-item-section>
@@ -50,7 +55,7 @@
 
         <q-item tag="label" v-ripple v-if="$store.state.auth.loggedIn">
           <q-item-section>
-            <q-item-label>Notifications</q-item-label>
+            <q-item-label>Push notifications</q-item-label>
           </q-item-section>
           <q-item-section avatar v-if="!$store.state.notifications.loading">
             <q-toggle color="red" v-model="notifications" :disable="!$store.state.notifications.available" />
@@ -91,8 +96,20 @@ export default {
     }
   },
   created () {
+    // XXX: hack for spoiler tags
+    document.addEventListener('click', function (event) {
+      const clickedElement = event.target, matchingChild = clickedElement.closest('spoiler')
+      if (matchingChild !== null) {
+        if (matchingChild.matches('spoiler')) {
+          matchingChild.classList.add('shown')
+        }
+      }
+    })
     // XXX: Move to store
     this.darkMode = localStorage.getItem('dark') === '1'
+  },
+  mounted () {
+    this.$store.dispatch('auth/getData')
   },
   watch: {
     darkMode (val) {
@@ -131,5 +148,18 @@ body.body--dark
     color: #777
   a:visited
     color: #444
+
+spoiler:not(.shown) a
+  pointer-events: none
+  color: #111
+
+spoiler:not(.shown)
+  color: #111
+  background-color: #111
+  border-radius: 3px
+  user-select: none
+
+spoiler
+  transition: background-color 400ms linear
 
 </style>

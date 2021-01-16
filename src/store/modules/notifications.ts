@@ -22,29 +22,48 @@ export interface State {
   loading: boolean;
   pushToken: null | string;
   available: boolean;
+  count: {
+    notifications: number;
+    messages: number;
+    total: number;
+  };
 }
 
 export interface Getters {
   loading: boolean;
   pushToken: null | string;
   available: boolean;
+  count: {
+    notifications: number;
+    messages: number;
+  };
 }
 
 export interface Mutations {
   setLoading: boolean;
   setToken: null | string;
+  setCount: {
+    notifications: number;
+    messages: number;
+  };
 }
 
 export const state: State = {
   loading: false,
   pushToken: window.localStorage.getItem('pushToken'),
-  available: firebase.messaging.isSupported()
+  available: firebase.messaging.isSupported(),
+  count: {
+    notifications: 0,
+    messages: 0,
+    total: 0
+  }
 }
 
 export const getters: DefineGetters<Getters, State> = {
   loading: (state) => state.loading,
   pushToken: (state) => state.pushToken,
-  available: (state) => state.available
+  available: (state) => state.available,
+  count: (state) => state.count
 }
 
 export const mutations: DefineMutations<Mutations, State> = {
@@ -57,6 +76,13 @@ export const mutations: DefineMutations<Mutations, State> = {
       window.localStorage.removeItem('pushToken')
     } else {
       window.localStorage.setItem('pushToken', payload)
+    }
+  },
+  setCount (state, payload) {
+    state.count = {
+      notifications: payload.notifications,
+      messages: payload.messages,
+      total: payload.notifications + payload.messages
     }
   }
 }
@@ -102,6 +128,9 @@ export const actions: ActionTree<State, StoreInterface> = {
         return Promise.reject('Unable to get notification permission')
       }
     })
+  },
+  setNotificationCount ({ commit }, payload) {
+    commit('setCount', payload)
   }
 }
 
