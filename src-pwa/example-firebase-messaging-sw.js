@@ -16,5 +16,12 @@ messaging.setBackgroundMessageHandler(function (payload) {
   const notificationTitle = notificationData.title
   const notificationOptions = JSON.parse(notificationData.notificationPayload)
 
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
+  if (navigator.setAppBadge) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    navigator.setAppBadge(notificationData.notificationCount)
+  }
   return self.registration.showNotification(notificationTitle, notificationOptions)
 })

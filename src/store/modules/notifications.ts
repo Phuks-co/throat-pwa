@@ -84,6 +84,13 @@ export const mutations: DefineMutations<Mutations, State> = {
       messages: payload.messages,
       total: payload.notifications + payload.messages
     }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // @ts-ignore
+    if (navigator.setAppBadge) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+      // @ts-ignore
+      navigator.setAppBadge(state.count.total)
+    }
   }
 }
 
