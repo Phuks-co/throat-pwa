@@ -81,6 +81,14 @@
                 </div>
               </div>
             </q-card-section>
+            <q-separator/>
+            <q-card-actions>
+              <q-btn flat disabled>Read&nbsp;<span v-if="ntf.read"><timeago :datetime="ntf.read" />&nbsp;ago</span><span v-else>now</span></q-btn>
+              <q-space/>
+              <q-btn flat v-if="!ntf.ignored" @click="ignoreUser(ntf)" :loading="ntf.loadingIgnore">Block</q-btn>
+              <q-btn flat v-else @click="unignoreUser(ntf)" :loading="ntf.loadingIgnore">Unblock</q-btn>
+              <q-btn flat color="red" @click="deleteNotification(ntf)" :loading="ntf.loadingDelete">Delete</q-btn>
+            </q-card-actions>
           </q-card>
         </div>
       </div>
@@ -109,11 +117,15 @@ export default {
       this.loading = true
       this.$axios.get(`${process.env.API_URI}notifications`)
         .then((res) => {
+          res.data.notifications.forEach((i) => {
+            i.loadingIgnore = false
+            i.loadingDelete = false
+          })
           this.messages = res.data.notifications
-          console.log(res.data)
         })
-        .catch((err) => {
-          console.log(err)
+        .catch((e) => {
+          if (!e.response && typeof e !== 'string') e = 'Network error'
+          this.$q.notify(e.response.data.msg || e)
         }).finally(() => {
           this.loading = false
         })
@@ -156,6 +168,57 @@ export default {
         link: ntf.post_link,
         loadingUpvote: false
       }
+    },
+    ignoreUser (ntf) {
+      ntf.loadingIgnore = true
+      this.$axios.post(`${process.env.API_URI}notifications/ignore`, { user: ntf.sender })
+        .then(() => {
+          ntf.ignored = true
+          ntf.loadingIgnore = false
+        })
+        .catch((e) => {
+          if (!e.response && typeof e !== 'string') e = 'Network error'
+          this.$q.notify(e.response.data.msg || e)
+        })
+        .finally(() => {
+          ntf.loadingIgnore = false
+        })
+    },
+    unignoreUser (ntf) {
+      ntf.loadingIgnore = true
+      this.$axios.delete(`${process.env.API_URI}notifications/ignore`, { data: { user: ntf.sender } })
+        .then(() => {
+          ntf.ignored = false
+          ntf.loadingIgnore = false
+        })
+        .catch((e) => {
+          if (!e.response && typeof e !== 'string') e = 'Network error'
+          this.$q.notify(e.response.data.msg || e)
+        })
+        .finally(() => {
+          ntf.loadingIgnore = false
+        })
+    },
+    deleteNotification (ntf) {
+      this.$q.dialog({
+        title: 'Confirm',
+        message: 'Do you want to delete this notification?',
+        ok: true,
+        cancel: true
+      }).onOk(() => {
+        ntf.loadingDelete = true
+        this.$axios.delete(`${process.env.API_URI}notifications`, { data: { notificationId: ntf.id } })
+          .then(() => {
+            this.messages = this.messages.filter((r) => r.id !== ntf.id)
+          })
+          .catch((e) => {
+            if (!e.response && typeof e !== 'string') e = 'Network error'
+            this.$q.notify(e.response.data.msg || e)
+          })
+          .finally(() => {
+            ntf.loadingDelete = false
+          })
+      })
     }
   }
 }
