@@ -1,6 +1,6 @@
 {
   "name": "throat-pwa",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Phuks link aggregator client",
   "productName": "Phuks",
   "cordovaId": "space.shitposting.app",
