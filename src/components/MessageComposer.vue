@@ -48,7 +48,7 @@ export default {
   methods: {
     sendMessage () {
       this.loading = true
-      this.$axios.post(`${process.env.API_URI}messages`, { to: this.recipient, subject: this.subject, content: this.content})
+      this.$axios.post(`${process.env.API_URI}messages`, { to: this.recipient, subject: this.subject, content: this.content })
         .then(() => {
           this.$emit('sent')
         }).finally(() => { this.loading = false })
