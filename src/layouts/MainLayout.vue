@@ -40,7 +40,7 @@
 
         <q-separator />
         <DrawerItem v-if="$store.state.auth.loggedIn" title="Notifications" link="/messages/notifications" icon="notifications" :badge="$store.state.notifications.count.notifications"/>
-        <!--<DrawerItem v-if="$store.state.auth.loggedIn" title="Messages" icon="mail"/>-->
+        <DrawerItem v-if="$store.state.auth.loggedIn" title="Messages" link="/messages/inbox" icon="mail" :badge="$store.state.notifications.count.messages"/>
 
         <q-separator/>
 
