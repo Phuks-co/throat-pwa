@@ -87,7 +87,7 @@
               <q-space/>
               <q-btn flat v-if="!ntf.ignored" @click="ignoreUser(ntf)" :loading="ntf.loadingIgnore">Block</q-btn>
               <q-btn flat v-else @click="unignoreUser(ntf)" :loading="ntf.loadingIgnore">Unblock</q-btn>
-              <q-btn flat color="red" @click="deleteNotification(ntf)" :loading="ntf.loadingDelete">Delete</q-btn>
+              <q-btn flat color="red" @click="deleteNotification(ntf)" :loading="ntf.loadingDelete" icon="delete"/>
             </q-card-actions>
           </q-card>
         </div>
