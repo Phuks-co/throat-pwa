@@ -17,7 +17,8 @@
             </q-card-section>
             <q-separator/>
             <q-card-actions>
-              <q-btn flat disabled>Read&nbsp;<span v-if="ntf.read"><timeago :datetime="ntf.read" />&nbsp;ago</span><span v-else>now</span></q-btn>
+              <q-btn flat disabled v-if="ntf.read">Read&nbsp;<span v-if="ntf.read"><timeago :datetime="ntf.read" />&nbsp;ago</span><span v-else>now</span></q-btn>
+              <q-btn color="primary" v-else @click="markAsRead(ntf)" :loading="ntf.markAsReadLoading">Mark as read</q-btn>
               <q-btn flat @click="sendMessage(ntf)">Reply</q-btn>
               <q-space/>
               <q-btn flat v-if="!ntf.ignored" @click="ignoreUser(ntf)" :loading="ntf.loadingIgnore">Block</q-btn>
@@ -60,6 +61,7 @@ export default {
           res.data.messages.forEach((i) => {
             i.loadingIgnore = false
             i.loadingDelete = false
+            i.markAsReadLoading = false
           })
           this.messages = res.data.messages
         })
@@ -125,6 +127,16 @@ export default {
       this.messageComposerTo = ntf.sender
       this.dialogMessageComposer = true
       this.messageComposerSubject = ntf.subject
+    },
+    markAsRead (ntf) {
+      ntf.markAsReadLoading = true
+      this.$axios.post(`${process.env.API_URI}messages/${ntf.id}/read`)
+        .then(() => {
+          ntf.read = new Date()
+        })
+        .finally(() => {
+          ntf.markAsReadLoading = false
+        })
     }
   }
 }
