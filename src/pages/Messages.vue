@@ -1,22 +1,39 @@
 <template>
   <q-page class="docs-input row justify-center">
     <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12 q-pa-sm">
-      <span style="font-size: 2em">Messages</span>
+      <div>
+        <span v-if="!sent" style="font-size: 2em">Messages</span>
+        <span v-else style="font-size: 2em">Sent messages</span>
+        <q-btn flat round icon="more_vert">
+          <q-menu>
+            <q-list style="min-width: 100px">
+              <q-item clickable v-close-popup :to="'/messages/ignore'">
+                <q-item-section>Blocked users</q-item-section>
+              </q-item>
+
+              <q-item v-if="!sent" clickable v-close-popup :to="'/messages/sent'">
+                <q-item-section>Sent messages</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+      </div>
       <div v-if="loading" class="row justify-center full-height full-width text-center q-pt-lg">
         <q-spinner color="primary" size="3em"/>
       </div>
       <div v-else class="q-pt-sm q-pl-sm">
         <div v-for="ntf in messages" :key="ntf.id">
-          <q-card bordered :class="(!ntf.read ? 'msg-highlight' : '') + ' q-ma-sm'">
+          <q-card bordered :class="(!ntf.read && !sent ? 'msg-highlight' : '') + ' q-ma-sm'">
             <q-card-section>
               <!-- title -->
               <div class="text-subtitle1">{{ ntf.subject }}</div>
-              <div class="text-subtitle2" style="margin-bottom: 0.6em">Sent <timeago :datetime="ntf.posted"/> ago by <router-link :to="`/u/${ntf.sender}`">/u/{{ ntf.sender }}</router-link></div>
+              <div class="text-subtitle2" style="margin-bottom: 0.6em" v-if="!sent">Sent <timeago :datetime="ntf.posted"/> ago by <router-link :to="`/u/${ntf.sender}`">/u/{{ ntf.sender }}</router-link></div>
+              <div class="text-subtitle2" style="margin-bottom: 0.6em" v-else>Sent <timeago :datetime="ntf.posted"/> ago to <router-link :to="`/u/${ntf.sender}`">/u/{{ ntf.sender }}</router-link></div>
 
               <div v-html="ntf.content" />
             </q-card-section>
-            <q-separator/>
-            <q-card-actions>
+            <q-separator v-if="!sent"/>
+            <q-card-actions v-if="!sent">
               <q-btn flat disabled v-if="ntf.read">Read&nbsp;<span v-if="ntf.read"><timeago :datetime="ntf.read" />&nbsp;ago</span><span v-else>now</span></q-btn>
               <q-btn color="primary" v-else @click="markAsRead(ntf)" :loading="ntf.markAsReadLoading">Mark as read</q-btn>
               <q-btn flat @click="sendMessage(ntf)">Reply</q-btn>
@@ -40,6 +57,12 @@ import MessageComposer from '../components/MessageComposer'
 export default {
   name: 'Messages',
   components: { MessageComposer },
+  props: {
+    sent: {
+      type: Boolean,
+      default: false
+    }
+  },
   data: () => ({
     messages: [],
     loading: false,
@@ -56,7 +79,11 @@ export default {
       this.dialogMessageComposer = false
       // TODO: Move to store
       this.loading = true
-      this.$axios.get(`${process.env.API_URI}messages`)
+      let uri = `${process.env.API_URI}messages`
+      if (this.sent) {
+        uri += '/sent'
+      }
+      this.$axios.get(uri)
         .then((res) => {
           res.data.messages.forEach((i) => {
             i.loadingIgnore = false
