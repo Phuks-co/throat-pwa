@@ -5,7 +5,7 @@
     </q-card-section>
     <q-card-section>
       <q-input v-model="recipient" label="Recipient" :disable="!!this.to" />
-      <q-input v-model="subject" label="Subject" />
+      <q-input v-model="subject" label="Subject" required />
 
       <q-input
         v-model="content"
@@ -14,6 +14,7 @@
         rows="10"
         type="textarea"
         counter
+        required
         :maxlength="16384"
       />
     </q-card-section>
@@ -21,7 +22,7 @@
     <q-card-actions>
       <q-btn v-close-popup flat>Cancel</q-btn>
       <q-space/>
-      <q-btn color="primary" @click="sendMessage" :loading="loading">Send</q-btn>
+      <q-btn color="primary" @click="sendMessage" :loading="loading" :disabled="!content || !subject">Send</q-btn>
     </q-card-actions>
   </q-card>
 </template>
@@ -51,6 +52,7 @@ export default {
       this.$axios.post(`${process.env.API_URI}messages`, { to: this.recipient, subject: this.subject, content: this.content })
         .then(() => {
           this.$emit('sent')
+          this.$q.notify('Message sent.')
         }).finally(() => { this.loading = false })
     }
   }

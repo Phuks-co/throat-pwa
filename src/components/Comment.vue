@@ -44,6 +44,10 @@
               <q-item clickable v-close-popup @click="deleteCommentDialog = true" v-if="comment.user === $store.state.auth.username">
                 <q-item-section>Delete</q-item-section>
               </q-item>
+
+              <q-item clickable v-close-popup @click="messageComposerDialog = true" v-if="comment.user !== $store.state.auth.username">
+                <q-item-section>Message {{ comment.user }}</q-item-section>
+              </q-item>
               <!-- <q-separator />
               <q-item clickable v-close-popup>
                 <q-item-section>Report</q-item-section> TODO
@@ -85,13 +89,19 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <!-- This could be a single dialog per thread instead of one for each damn comment...  -->
+    <q-dialog v-model="messageComposerDialog" :maximized="$q.platform.is.mobile" style="min-width: 50%;">
+      <MessageComposer :to="comment.user" @sent="messageComposerDialog = false"/>
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import CommentCreator from 'components/CommentCreator.vue'
+import MessageComposer from 'components/MessageComposer.vue'
 export default {
-  components: { CommentCreator },
+  components: { CommentCreator, MessageComposer },
   props: {
     comment: {
       type: Object,
@@ -135,7 +145,9 @@ export default {
     editingComment: false,
     loadingCommentEdit: false,
     deleteCommentDialog: false,
-    deletingComment: false
+    deletingComment: false,
+
+    messageComposerDialog: false
   }),
   created () {
     if (this.comment.status !== null && this.comment.cid !== null) {

@@ -44,14 +44,17 @@
           <i class="material-icons alm" aria-hidden="true">chat_bubble</i> {{post.comments}}
         </router-link>
         <div style="display: inline-block; float: right">
-          <q-btn v-if="post.user === $store.state.auth.username" flat dense icon="more_vert" style="border-right: 2px solid #ddd">
+          <q-btn flat dense icon="more_vert" style="border-right: 2px solid #ddd">
             <q-menu>
               <q-list style="min-width: 100px">
-                <q-item v-if="post.type === 'text'" clickable v-close-popup @click="editPost">
+                <q-item v-if="post.user === $store.state.auth.username && post.type === 'text'" clickable v-close-popup @click="editPost">
                   <q-item-section>Edit</q-item-section>
                 </q-item>
-                <q-item clickable v-close-popup @click="deletePostDialog = true">
+                <q-item v-if="post.user === $store.state.auth.username" clickable v-close-popup @click="deletePostDialog = true">
                   <q-item-section>Delete</q-item-section>
+                </q-item>
+                <q-item v-if="post.user !== $store.state.auth.username" clickable v-close-popup @click="messageComposerDialog = true">
+                  <q-item-section>Message {{post.user}}</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
@@ -96,15 +99,20 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <q-dialog v-model="messageComposerDialog" :maximized="$q.platform.is.mobile" style="min-width: 50%;">
+      <MessageComposer :to="post.user" @sent="messageComposerDialog = false"/>
+    </q-dialog>
   </div>
 </template>
 
 <script>
 import Comment from 'components/Comment.vue'
 import CommentCreator from 'components/CommentCreator.vue'
+import MessageComposer from 'components/MessageComposer.vue'
 export default {
   name: 'Post',
-  components: { Comment, CommentCreator },
+  components: { Comment, CommentCreator, MessageComposer },
   props: {
     post: {
       type: Object,
@@ -131,7 +139,9 @@ export default {
     deletePostDialog: false,
 
     loadingDownvote: false,
-    loadingUpvote: false
+    loadingUpvote: false,
+
+    messageComposerDialog: false
   }),
   created () {
     this.comments = []
