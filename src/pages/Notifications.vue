@@ -1,8 +1,18 @@
 <template>
   <q-page class="docs-input row justify-center">
     <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-xs-12 q-pa-sm">
-      <span style="font-size: 2em">Notifications</span>
-      <div v-if="loading" class="row justify-center full-height full-width text-center q-pt-lg">
+      <div>
+        <span style="font-size: 2em">Notifications</span>
+        <q-btn flat round icon="more_vert">
+          <q-menu>
+            <q-list style="min-width: 100px">
+              <q-item clickable v-close-popup :to="'/messages/ignore'">
+                <q-item-section>Blocked users</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
+      </div>      <div v-if="loading" class="row justify-center full-height full-width text-center q-pt-lg">
         <q-spinner color="primary" size="3em"/>
       </div>
       <div v-else class="q-pt-sm q-pl-sm">

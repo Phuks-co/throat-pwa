@@ -17,7 +17,8 @@ const routes: RouteConfig[] = [
 
       { path: '/messages/notifications', name: 'view_notifications', props: true, component: () => import('pages/Notifications.vue') },
       { path: '/messages/inbox', name: 'view_messages', props: true, component: () => import('pages/Messages.vue') },
-      { path: '/messages/sent', name: 'view_messages', props: () => ({ sent: true }), component: () => import('pages/Messages.vue') },
+      { path: '/messages/sent', name: 'view_sent_messages', props: () => ({ sent: true }), component: () => import('pages/Messages.vue') },
+      { path: '/messages/ignore', name: 'view_ignores', props: true, component: () => import('pages/Ignores.vue') },
 
       { path: 'login', name: 'login', component: () => import('pages/Login.vue') },
       { path: 'register', name: 'register', component: () => import('pages/Register.vue') }
