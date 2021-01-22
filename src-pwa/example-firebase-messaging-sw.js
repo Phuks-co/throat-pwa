@@ -21,7 +21,7 @@ messaging.setBackgroundMessageHandler(function (payload) {
   if (navigator.setAppBadge) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
-    navigator.setAppBadge(notificationData.notificationCount)
+    navigator.setAppBadge(notificationData.notificationCount.messages + notificationData.notificationCount.notifications)
   }
   return self.registration.showNotification(notificationTitle, notificationOptions)
 })
